@@ -6,15 +6,17 @@ Coronavirus Tracker is an app that allows users to report symptoms. It then trac
 
 ## How it Works
 
-<img src="./pitch/images/android-home.png" alt="drawing" width="300"/>
-<img src="./pitch/images/android-symptoms.png" alt="drawing" width="300"/>
+<p float="left">
+<img src="./pitch/images/android-home.png" alt="drawing" width="300" />
+<img src="./pitch/images/android-symptoms.png" alt="drawing" width="300"  />
+</p>
 
-### Logging contact
+### Logging all contact
 
 Proximity to other people, who also have the app, is recorded based on three factors:
-- Bluetooth signal strenght
-- Wifi hotspots that both phones can see (i.e. the phones compare strength of different hotspots to self-triangulate)
-- Near-ultrasound audio, to detect if the phones are in 'earshot' range
+- Bluetooth signal strength
+- Wifi hotspots that both phones can see (cross-triangulation)
+- Near-ultrasound audio
 
 When another device is within around 2m of range, the app will simply log how long contact has been maintained for.
 
@@ -31,7 +33,7 @@ Note: All data will be anonymised.
 
 ## Key challenges
 
-The primary challenge will be to obtain public adoption on a large scale - this will be significantly easier if useage is advised by governments or public health bodies.
+The primary challenge will be to obtain public adoption on a large scale - this will be significantly easier if use is advised by governments or public health bodies.
 
 ## Request for collaborators
 
