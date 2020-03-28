@@ -33,10 +33,12 @@ public class MainActivity extends AppCompatActivity {
     private MessageListener mMessageListener;
 
     /**
-     * Tracking enabled setting
+     * App setting
      */
     private SharedPreferences sharedPreferences;
     private Boolean trackingEnabled;
+    private String symptomsReportedDate;
+    private Boolean symptomsRecentlyReported;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,24 +51,36 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getApplicationContext().getSharedPreferences("preferences", MODE_PRIVATE);
         int trackingEnabledInt = sharedPreferences.getInt("trackingEnabled", 1);
         trackingEnabled = trackingEnabledInt == 1;
-        Log.d(TAG, "Tracking enabled: " + trackingEnabled);
+        symptomsReportedDate = sharedPreferences.getString( "symptomsReportedDate",  null);
+
+        // Set tracking enabled switch
         Switch trackingEnabledSwitch = (Switch) findViewById(R.id.trackingEnabled);
         trackingEnabledSwitch.setChecked(trackingEnabled);
 
-        mMessageListener = new MessageListener() {
-            @Override
-            public void onFound(Message message) {
-                Log.d(TAG, "Found message: " + new String(message.getContent()));
+        // If symptoms were reported over 14 days ago, ignore them
+        if (symptomsReportedDate != null) {
+            Long symptomsReportedSystemTime = Long.parseLong(symptomsReportedDate);
+            Long currentSystemTime = System.currentTimeMillis();
+            int fourteenDaysInMillis = 1209600000;
+            if (symptomsReportedSystemTime + fourteenDaysInMillis > currentSystemTime) {
+                symptomsRecentlyReported = true;
             }
+        }
 
-            @Override
-            public void onLost(Message message) {
-                Log.d(TAG, "Lost sight of message: " + new String(message.getContent()));
-            }
-        };
-
-        // Build the message that is going to be published
-       mMessage = new Message("Hello World".getBytes());
+//        mMessageListener = new MessageListener() {
+//            @Override
+//            public void onFound(Message message) {
+//                Log.d(TAG, "Found message: " + new String(message.getContent()));
+//            }
+//
+//            @Override
+//            public void onLost(Message message) {
+//                Log.d(TAG, "Lost sight of message: " + new String(message.getContent()));
+//            }
+//        };
+//
+//        // Build the message that is going to be published
+//       mMessage = new Message("Hello World".getBytes());
     }
 
     /**
@@ -82,21 +96,21 @@ public class MainActivity extends AppCompatActivity {
     /**
      * On start/stop
      */
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        Log.d(TAG, "Publishing message");
-        Nearby.getMessagesClient(this).publish(mMessage);
-        Nearby.getMessagesClient(this).subscribe(mMessageListener);
-    }
-
-    @Override
-    public void onStop() {
-        Nearby.getMessagesClient(this).unpublish(mMessage);
-        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
-        super.onStop();
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//
+//        Log.d(TAG, "Publishing message");
+//        Nearby.getMessagesClient(this).publish(mMessage);
+//        Nearby.getMessagesClient(this).subscribe(mMessageListener);
+//    }
+//
+//    @Override
+//    public void onStop() {
+//        Nearby.getMessagesClient(this).unpublish(mMessage);
+//        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
+//        super.onStop();
+//    }
 
     /**
      * Symptom checker button
