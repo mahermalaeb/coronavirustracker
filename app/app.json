@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Blank Template (TypeScript)",
-    "slug": "app-expo",
+    "name": "Coronavirus Tracker",
+    "slug": "coronavirus-tracker",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
@@ -24,7 +24,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.coronotrace.coronovirustracker",
+      "buildNumber": "1.0.0"
     }
   }
 }

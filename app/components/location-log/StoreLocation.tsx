@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import * as Location from "expo-location";
+import { getCurrentPositionAsync, Accuracy } from "expo-location";
 import * as FileSystem from "expo-file-system";
 import moment from "moment";
 import { useLocationPermission } from "./useLocationPermission";
@@ -24,6 +24,7 @@ export function StoreLocation() {
 }
 
 async function storeLocation() {
-  const locationResponse = await Location.getCurrentPositionAsync({});
+  const locationResponse = await getCurrentPositionAsync({ accuracy: Accuracy.Highest });
+  console.log(locationResponse);
   appendLogFile(locationResponse.coords, locationResponse.timestamp);
 }

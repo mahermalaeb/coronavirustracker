@@ -38,7 +38,6 @@ export function ViewLocationHistory() {
         showsUserLocation
         region={region}
         onRegionChange={setRegion}
-        maxZoomLevel={15}
       >
         <Polyline coordinates={locationHistory} />
       </MapView>
