@@ -28,4 +28,7 @@
         contact with over the past 5 days, will be told to self-isolate.
         \n\nDon\'t worry - they won\'t be told who you are, or when they came into contact with you.
         \n\nYou will also need to self-isolate yourself for 14 days.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

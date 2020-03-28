@@ -1,1 +1,0 @@
-export { StoreLocation } from "./StoreLocation";

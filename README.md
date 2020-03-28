@@ -6,30 +6,33 @@ Coronavirus Tracker is an app that allows users to report symptoms. It then trac
 
 ## How it Works
 
-![App home screen informs user of potential contact, tracks their location and allows the user to check symptoms](./pitch/images/home-screenshot-iphone.jpg)
+![App home screen informs user of potential contact & tracks their contact.](./pitch/images/android-home.png?s=100)
+![App allows users to check their symptoms.](./pitch/images/android-symptoms.png?s=100)
 
-1. User's 3-dimensional location (longitude, latitude, altitude) is captured every 10 seconds. For situations where GPS is not available, their proximity to other users is captured using Bluetooth.
-2. A user can click 'check symptoms' to determine if they may be infected.
-3. Infected user's location data is cross compared against all users. For those who have had significant contact (initially 5+ minutes within 2m of proximity), they will be advised to self-quarantine. This is done recursively with increasing time-requirements. That is to say, if person A was in contact with person B for 10 minutes, and then person B was in contact with person C for 2 hours, person C will also be told to self-quarantine.
+### Logging contact
+
+Proximity to other people, who also have the app, is recorded based on three factors:
+- Bluetooth signal strenght
+- Wifi hotspots that both phones can see (i.e. the phones compare strength of different hotspots to self-triangulate)
+- Near-ultrasound audio, to detect if the phones are in 'earshot' range
+
+When another device is within around 2m of range, the app will simply log how long contact has been maintained for.
+
+### Contact tracing
+
+If a user reports symptoms on their app, anyone who they have had significant contact with (initially 5+ minutes within 2m of proximity), will be advised to self-quarantine. This is done recursively with increasing time-requirements. That is to say, if person A was in contact with person B for 10 minutes, and then person B was in contact with person C for 2 hours, person C will also be told to self-quarantine.
 
 ## Data returned to governments/health bodies
 
-Note: All data will of course be approximate, and steps will be taken to ensure that it is anonymised.
+Note: All data will be anonymised.
 
-- Geographic distribution of infected people.
 - Number of infected people.
 - Average amount of time required to become infected.
 
 ## Key challenges
 
-- Requesting public adoption on a large scale.
-- Data handling costs - which could for example reach £1m+/day in the UK.
-- Privacy concerns (mitigated to an extent by careful anonymising with e.g. approximate locations for government statistics).
+The primary challenge will be to obtain public adoption on a large scale - this will be significantly easier if useage is advised by governments or public health bodies.
 
 ## Request for collaborators
 
-Please contact alan@skyhookadventure.com if you are capable of authorising this project within your government, or if you have a useful skill set including:
-
-- Designing data-intensive cloud-first systems
-- React native app building
-- Accessibility
+Please contact alan@skyhookadventure.com if you are capable of authorising this project within your government, or you are able to collaborate in any other way.
