@@ -2,7 +2,6 @@ package com.coronotrace.coronavirustracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,11 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
-
-import com.google.android.gms.nearby.Nearby;
-import com.google.android.gms.nearby.messages.Message;
-import com.google.android.gms.nearby.messages.MessageListener;
-
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private String symptomsReportedDate;
     private Boolean symptomsRecentlyReported = false;
     private String trackingId;
+    private Intent trackingEnabledIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
         trackingEnabledSwitch.setChecked(trackingEnabled);
 
         // Start the foreground service if tracking is enabled
+        trackingEnabledIntent = new Intent(this, LogContact.class);
         if (trackingEnabled) {
-            Intent trackingEnabledIntent = new Intent(this, LogContact.class);
             startService(trackingEnabledIntent);
         }
 
@@ -72,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences.edit().putInt("trackingEnabled", trackingEnabledInt).apply();
 
         // Enable/disable tracking
-        Intent trackingEnabledIntent = new Intent(this, LogContact.class);
         if (trackingEnabled) {
             startService(trackingEnabledIntent);
         } else {
