@@ -1,14 +1,20 @@
 <resources>
     <string name="app_name">Coronavirus Tracker</string>
-    <string name="status_no_contact_title">No Coronavirus Contact Detected</string>
-    <string name="status_no_contact_description">We\'ll let you know if you\'ve come into contact
-        with anyone, who has reported symptoms on their app.</string>
     <string name="check_symptoms">Check Symptoms</string>
     <string name="settings">Settings</string>
     <string name="enable_contact_tracking">Enable contract tracking</string>
     <string name="enable_contact_tracking_description">The app will remember everyone who you\'ve
         come into contact with (so long as they have the app). You can safely use other apps whilst
         this is running.</string>
+
+    <!-- Status -->
+    <string name="status_no_contact_title">No Coronavirus Contact Detected</string>
+    <string name="status_no_contact_description">We\'ll let you know if you\'ve come into contact
+        with anyone, who has reported symptoms on their app.</string>
+    <string name="status_symptoms_title">Please Self-Isolate</string>
+    <string name="status_symptoms_body">You have reported symptoms within the past 14 days. Please
+    self-isolate until the 14 days is over, to help save lives.</string>
+
 
     <!-- Symptoms -->
     <string name="check_symptoms_title">Have you experienced any of these symptoms?</string>

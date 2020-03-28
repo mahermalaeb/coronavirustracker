@@ -1,6 +1,7 @@
 package com.coronotrace.coronavirustracker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
@@ -17,6 +19,8 @@ import com.google.android.gms.nearby.messages.MessageListener;
 import com.google.android.gms.nearby.messages.MessagesOptions;
 import com.google.android.gms.nearby.messages.PublishOptions;
 import com.google.android.gms.nearby.messages.Strategy;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private Boolean trackingEnabled;
     private String symptomsReportedDate;
-    private Boolean symptomsRecentlyReported;
+    private Boolean symptomsRecentlyReported = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,21 +55,15 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getApplicationContext().getSharedPreferences("preferences", MODE_PRIVATE);
         int trackingEnabledInt = sharedPreferences.getInt("trackingEnabled", 1);
         trackingEnabled = trackingEnabledInt == 1;
-        symptomsReportedDate = sharedPreferences.getString( "symptomsReportedDate",  null);
+
 
         // Set tracking enabled switch
         Switch trackingEnabledSwitch = (Switch) findViewById(R.id.trackingEnabled);
         trackingEnabledSwitch.setChecked(trackingEnabled);
 
-        // If symptoms were reported over 14 days ago, ignore them
-        if (symptomsReportedDate != null) {
-            Long symptomsReportedSystemTime = Long.parseLong(symptomsReportedDate);
-            Long currentSystemTime = System.currentTimeMillis();
-            int fourteenDaysInMillis = 1209600000;
-            if (symptomsReportedSystemTime + fourteenDaysInMillis > currentSystemTime) {
-                symptomsRecentlyReported = true;
-            }
-        }
+        /**
+         * Setup Status Card
+         */
 
 //        mMessageListener = new MessageListener() {
 //            @Override
@@ -96,15 +94,44 @@ public class MainActivity extends AppCompatActivity {
     /**
      * On start/stop
      */
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//
-//        Log.d(TAG, "Publishing message");
-//        Nearby.getMessagesClient(this).publish(mMessage);
-//        Nearby.getMessagesClient(this).subscribe(mMessageListener);
-//    }
-//
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        /**
+         * Update the user status card
+         */
+        symptomsReportedDate = sharedPreferences.getString( "symptomsReportedDate",  null);
+
+        // If symptoms were reported over 14 days ago, ignore them
+        if (symptomsReportedDate != null) {
+            Long symptomsReportedSystemTime = Long.parseLong(symptomsReportedDate);
+            Long currentSystemTime = System.currentTimeMillis();
+            int fourteenDaysInMillis = 1209600000;
+            if (symptomsReportedSystemTime + fourteenDaysInMillis > currentSystemTime) {
+                symptomsRecentlyReported = true;
+            }
+        }
+
+        // Get the items to update
+        ConstraintLayout statusCard = findViewById(R.id.statusCard);
+        TextView statusCardTitle = findViewById(R.id.statusCardTitle);
+        TextView statusCardBody = findViewById(R.id.statusCardBody);
+
+    Log.d(TAG, symptomsRecentlyReported.toString());
+
+        // Update the status card if contact/symptoms
+        if (symptomsRecentlyReported) {
+            int backgroundColor = getResources().getColor(R.color.design_default_color_error);
+            int textColor = getResources().getColor(R.color.design_default_color_on_primary);
+            statusCard.setBackgroundColor(backgroundColor);
+            statusCardTitle.setText(R.string.status_symptoms_title);
+            statusCardTitle.setTextColor(textColor);
+            statusCardBody.setText(R.string.status_symptoms_body);
+            statusCardBody.setTextColor(textColor);
+        }
+    }
+
 //    @Override
 //    public void onStop() {
 //        Nearby.getMessagesClient(this).unpublish(mMessage);
