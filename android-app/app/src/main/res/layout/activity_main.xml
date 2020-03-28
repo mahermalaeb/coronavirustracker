@@ -69,6 +69,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:background="@color/colorPrimary"
+        android:onClick="checkSymptoms"
         android:text="@string/check_symptoms"
         android:textColor="@color/design_default_color_on_primary"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -89,12 +90,13 @@
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/trackingEnabled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
+        android:onClick="setTrackingEnabled"
         android:text="@string/enable_contact_tracking"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
@@ -111,7 +113,7 @@
         android:text="@string/enable_contact_tracking_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch1" />
+        app:layout_constraintTop_toBottomOf="@+id/trackingEnabled" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

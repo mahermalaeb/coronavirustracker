@@ -1,9 +1,15 @@
 package com.coronotrace.coronavirustracker;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Switch;
 
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
@@ -27,15 +33,25 @@ public class MainActivity extends AppCompatActivity {
     private MessageListener mMessageListener;
 
     /**
-     * Adapter for working with messages from nearby publishers.
+     * Tracking enabled setting
      */
-    private ArrayAdapter<String> mNearbyDevicesArrayAdapter;
-
+    private SharedPreferences sharedPreferences;
+    private Boolean trackingEnabled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /**
+         * Set trackingEnabled switch based on current settings
+         */
+        sharedPreferences = getApplicationContext().getSharedPreferences("preferences", MODE_PRIVATE);
+        int trackingEnabledInt = sharedPreferences.getInt("trackingEnabled", 1);
+        trackingEnabled = trackingEnabledInt == 1;
+        Log.d(TAG, "Tracking enabled: " + trackingEnabled);
+        Switch trackingEnabledSwitch = (Switch) findViewById(R.id.trackingEnabled);
+        trackingEnabledSwitch.setChecked(trackingEnabled);
 
         mMessageListener = new MessageListener() {
             @Override
@@ -53,6 +69,19 @@ public class MainActivity extends AppCompatActivity {
        mMessage = new Message("Hello World".getBytes());
     }
 
+    /**
+     * Handle trackingEnabled switch change
+     */
+    public void setTrackingEnabled(View view) {
+        trackingEnabled = !trackingEnabled;
+        int trackingEnabledInt = trackingEnabled ? 1 : 0;
+        sharedPreferences.edit().putInt("trackingEnabled", trackingEnabledInt);
+    }
+
+
+    /**
+     * On start/stop
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -69,4 +98,12 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    /**
+     * Symptom checker button
+     */
+    public void checkSymptoms(View view) {
+        // Do something
+        Intent intent = new Intent(this, CheckSymptoms.class);
+        startActivity(intent);
+    }
 }
