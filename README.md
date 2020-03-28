@@ -6,8 +6,8 @@ Coronavirus Tracker is an app that allows users to report symptoms. It then trac
 
 ## How it Works
 
-![App home screen informs user of potential contact & tracks their contact.](./pitch/images/android-home.png?s=100)
-![App allows users to check their symptoms.](./pitch/images/android-symptoms.png?s=100)
+<img src="./pitch/images/android-home.png" alt="drawing" width="300"/>
+<img src="./pitch/images/android-symptoms.png" alt="drawing" width="300"/>
 
 ### Logging contact
 
