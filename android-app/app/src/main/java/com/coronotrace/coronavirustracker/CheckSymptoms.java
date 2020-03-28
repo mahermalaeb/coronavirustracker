@@ -61,7 +61,10 @@ public class CheckSymptoms extends AppCompatActivity {
                            SharedPreferences sharedPreferences = getApplicationContext()
                                    .getSharedPreferences("preferences", MODE_PRIVATE);
                             Long currentTimestamp = System.currentTimeMillis();
-                            sharedPreferences.edit().putString("symptomsReportedDate", currentTimestamp.toString());
+                            sharedPreferences
+                                    .edit()
+                                    .putString("symptomsReportedDate", currentTimestamp.toString())
+                                    .apply();
 
                             // Go to home screen
                             startActivity(goToAppHomeScreen);
