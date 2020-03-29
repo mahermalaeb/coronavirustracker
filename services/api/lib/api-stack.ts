@@ -1,5 +1,5 @@
 import * as cdk from "@aws-cdk/core";
-import { UserPool } from "@aws-cdk/aws-cognito";
+import { UserPool, CfnUserPoolClient } from "@aws-cdk/aws-cognito";
 import {
   GraphQLApi,
   UserPoolDefaultAction,
@@ -10,6 +10,7 @@ import {
 } from "@aws-cdk/aws-appsync";
 import { join } from "path";
 import { Table, BillingMode, AttributeType } from "@aws-cdk/aws-dynamodb";
+import { CfnOutput } from "@aws-cdk/core";
 
 export class ApiStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -18,6 +19,10 @@ export class ApiStack extends cdk.Stack {
     // User Pool
     const userPool = new UserPool(this, "userPool", {
       userPoolName: "users"
+    });
+
+    const userPoolAppClient = new CfnUserPoolClient(this, "userPoolAppClient", {
+      userPoolId: userPool.userPoolId
     });
 
     // API
@@ -123,5 +128,29 @@ export class ApiStack extends cdk.Stack {
     });
 
     // TODO - create and delete infection
+
+    /**
+     * Outputs
+     */
+
+    new CfnOutput(this, "userPoolId", {
+      value: userPool.userPoolId,
+      exportName: "userPoolId"
+    });
+
+    new CfnOutput(this, "userPoolAppClientId", {
+      value: userPoolAppClient.ref,
+      exportName: "userPoolAppClientId"
+    });
+
+    new CfnOutput(this, "apiUrl", {
+      value: api.graphQlUrl,
+      exportName: "apiUrl"
+    });
+
+    new CfnOutput(this, "stackRegion", {
+      value: this.region,
+      exportName: "stackRegion"
+    });
   }
 }
