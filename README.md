@@ -4,13 +4,13 @@
 
 Coronavirus Tracker is an app that allows users to report symptoms. It then traces anyone who they have come into contact with over the past 5 days, and alerts these people to self-quarantine. It is designed to be implemented by governments at country-wide scale.
 
-## How it Works
-
 <p float="left">
 <img src="./pitch/images/android-home.png" alt="App tells user if contact is detected" width="266" />
 <img src="./pitch/images/android-symptoms.png" alt="App allows user to report symptoms" width="266"  />
 <img src="./pitch/images/android-running.png" alt="App runs in the background" width="266"  />
 </p>
+
+## How it Works
 
 ### Logging all contact
 
