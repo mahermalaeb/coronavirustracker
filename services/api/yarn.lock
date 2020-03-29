@@ -165,7 +165,7 @@
     "@aws-cdk/core" "1.31.0"
     constructs "^2.0.0"
 
-"@aws-cdk/aws-dynamodb@1.31.0":
+"@aws-cdk/aws-dynamodb@1.31.0", "@aws-cdk/aws-dynamodb@^1.31.0":
   version "1.31.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-dynamodb/-/aws-dynamodb-1.31.0.tgz#b2e1e690f7e7289e101c08cfe44de45730233f85"
   integrity sha512-WbhIjzFJCsbZ6mRHWkq8iMDDmQ+l7sipQzlSN8t/enr4WjZ3yeM5Sik5D4APrMuwqpy62MPmXGC5WIFUYgZ/qA==
