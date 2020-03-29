@@ -6,12 +6,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+
+
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.core.Amplify;
+
+
+
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +38,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /**
+         * Test api
+         */
+        try {
+            Amplify.addPlugin(new AWSApiPlugin());
+            Amplify.configure(getApplicationContext());
+            Log.i("AmplifyGetStarted", "Amplify is all setup and ready to go!");
+        } catch (AmplifyException exception) {
+            Log.e("AmplifyGetStarted", "Failed to initialize Amplify", exception);
+        }
 
         /**
          * Set trackingEnabled switch based on current settings
@@ -105,8 +122,6 @@ public class MainActivity extends AppCompatActivity {
         TextView statusCardTitle = findViewById(R.id.statusCardTitle);
         TextView statusCardBody = findViewById(R.id.statusCardBody);
         Button mainButton = findViewById(R.id.mainButton);
-
-        Log.d(TAG, symptomsRecentlyReported.toString());
 
         // Update the UI if contact/symptoms
         if (symptomsRecentlyReported) {

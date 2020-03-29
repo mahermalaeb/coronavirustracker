@@ -116,7 +116,6 @@ public class LogContact extends Service {
         startLog = scheduler.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                android.util.Log.i("Logging: ", new Date().toString());
                 startLogging();
             }
         }, delay, 60000 , TimeUnit.MILLISECONDS );
@@ -125,7 +124,6 @@ public class LogContact extends Service {
         stopLog = scheduler.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                android.util.Log.i("Paused logging: ", new Date().toString());
                 stopLogging();
             }
         }, delay + 10000, 60000 , TimeUnit.MILLISECONDS );

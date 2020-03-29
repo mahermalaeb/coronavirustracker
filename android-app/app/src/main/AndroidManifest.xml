@@ -11,6 +11,10 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <!-- Required for Cognito -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -22,6 +26,8 @@
         <service
             android:name=".LogContact"
             android:exported="false"></service>
+        <!-- Service for subscriptions -->
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
 
         <activity android:name=".MainActivity">
             <intent-filter>

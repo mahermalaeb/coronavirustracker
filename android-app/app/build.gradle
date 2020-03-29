@@ -21,6 +21,11 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
 }
 
 dependencies {
@@ -35,4 +40,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-nearby:17.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.1.0'
+
+    //For AWSMobileClient only:
+    implementation 'com.amplifyframework:core:0.10.0'
+    implementation 'com.amplifyframework:aws-api:0.10.0'
+
 }
