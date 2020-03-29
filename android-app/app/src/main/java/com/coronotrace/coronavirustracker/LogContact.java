@@ -15,8 +15,13 @@ import androidx.core.app.NotificationCompat;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
 import com.google.android.gms.nearby.messages.MessageListener;
-import java.util.Timer;
-import java.util.TimerTask;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class LogContact extends Service {
 
@@ -55,26 +60,23 @@ public class LogContact extends Service {
             @Override
             public void onFound(Message message) {
                 Log.d(TAG, "Found message: " + new String(message.getContent()));
-            }
 
-            @Override
-            public void onLost(Message message) {
-                Log.d(TAG, "Lost sight of message: " + new String(message.getContent()));
+                // TODO - save UUID
             }
         };
 
         // Setup the message (just the UUID)
         message = new Message(trackingId.getBytes());
 
-        //do heavy work on a background thread
-        startLogging();
+        // Stop any existing logging, and then start again
+        startLoggingScheduler();
 
         return START_NOT_STICKY;
     }
 
     @Override
     public void onDestroy() {
-        stopLogging();
+        stopLoggingScheduler();
         super.onDestroy();
     }
 
@@ -96,25 +98,53 @@ public class LogContact extends Service {
         }
     }
 
-    public void startLogging()  {
-        Log.d(TAG, "Broadcasting UUID...");
+    private ScheduledFuture startLog;
+    private ScheduledFuture stopLog;
 
-        // Test - keep printing to show still active
-        class SayHello extends TimerTask {
+    private void startLoggingScheduler()  {
+        // Set to start scheduler at the beginning of every UTC minute
+        final SimpleDateFormat sdf = new SimpleDateFormat("ssSSS");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String secondMillisecondString = sdf.format(new Date());
+        int secondMillisecond = Integer.parseInt(secondMillisecondString);
+        int delay = 60000 - secondMillisecond;
+
+        // TODO make scheduler self-correct
+
+        // Start at the beginning of every minute
+        ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(1);
+        startLog = scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
             public void run() {
-                Log.d(TAG, "hi");
+                android.util.Log.i("Logging: ", new Date().toString());
+                startLogging();
             }
-        }
-        Timer timer = new Timer();
-        timer.schedule(new SayHello(), 0, 5000);
+        }, delay, 60000 , TimeUnit.MILLISECONDS );
 
-        Nearby.getMessagesClient(this).publish(message);
-        Nearby.getMessagesClient(this).subscribe(messageListener);
-
+        // Run for 10 seconds
+        stopLog = scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                android.util.Log.i("Paused logging: ", new Date().toString());
+                stopLogging();
+            }
+        }, delay + 10000, 60000 , TimeUnit.MILLISECONDS );
     }
 
-    public void stopLogging() {
+    private void stopLoggingScheduler() {
+        startLog.cancel(true);
+        stopLog.cancel(true);
+    }
+
+    private void startLogging() {
+        Nearby.getMessagesClient(this).publish(message);
+        Nearby.getMessagesClient(this).subscribe(messageListener);
+    }
+
+    private void stopLogging() {
         Nearby.getMessagesClient(this).unpublish(message);
         Nearby.getMessagesClient(this).unsubscribe(messageListener);
     }
+
+
 }

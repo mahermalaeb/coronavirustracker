@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
      * Symptom checker button
      */
     public void checkSymptoms(View view) {
-        // Do something
         Intent intent = new Intent(this, CheckSymptoms.class);
         startActivity(intent);
     }
