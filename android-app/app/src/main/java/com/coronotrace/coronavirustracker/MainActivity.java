@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import java.util.UUID;
@@ -101,11 +104,13 @@ public class MainActivity extends AppCompatActivity {
         ConstraintLayout statusCard = findViewById(R.id.statusCard);
         TextView statusCardTitle = findViewById(R.id.statusCardTitle);
         TextView statusCardBody = findViewById(R.id.statusCardBody);
+        Button mainButton = findViewById(R.id.mainButton);
 
         Log.d(TAG, symptomsRecentlyReported.toString());
 
-        // Update the status card if contact/symptoms
+        // Update the UI if contact/symptoms
         if (symptomsRecentlyReported) {
+            // Update the status card
             int backgroundColor = getResources().getColor(R.color.design_default_color_error);
             int textColor = getResources().getColor(R.color.design_default_color_on_primary);
             statusCard.setBackgroundColor(backgroundColor);
@@ -113,6 +118,14 @@ public class MainActivity extends AppCompatActivity {
             statusCardTitle.setTextColor(textColor);
             statusCardBody.setText(R.string.status_symptoms_body);
             statusCardBody.setTextColor(textColor);
+
+            // Add cancel button to the status card
+//            Button cancelSymptomsButton = new Button(this);
+//            cancelSymptomsButton.setText("I made a mistake");
+//            statusCard.addView(cancelSymptomsButton);
+
+            // Change the symptoms button
+            mainButton.setVisibility(View.GONE);
         }
     }
 
@@ -122,5 +135,9 @@ public class MainActivity extends AppCompatActivity {
     public void checkSymptoms(View view) {
         Intent intent = new Intent(this, CheckSymptoms.class);
         startActivity(intent);
+    }
+
+    public void mistakeSymptoms(View view) {
+        // TODO - remove symptoms state
     }
 }
