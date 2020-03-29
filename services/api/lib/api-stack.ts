@@ -1,46 +1,88 @@
-import * as cdk from "@aws-cdk/core";
-import { UserPool, CfnUserPoolClient } from "@aws-cdk/aws-cognito";
+import { Stack, Construct, StackProps, CfnOutput } from "@aws-cdk/core";
+import {
+  CfnIdentityPool,
+  CfnIdentityPoolRoleAttachment
+} from "@aws-cdk/aws-cognito";
 import {
   GraphQLApi,
-  UserPoolDefaultAction,
   FieldLogLevel,
   MappingTemplate,
   KeyCondition,
-  PrimaryKey
+  CfnGraphQLApi
 } from "@aws-cdk/aws-appsync";
 import { join } from "path";
 import { Table, BillingMode, AttributeType } from "@aws-cdk/aws-dynamodb";
-import { CfnOutput } from "@aws-cdk/core";
+import {
+  Role,
+  FederatedPrincipal,
+  PolicyStatement,
+  Effect
+} from "@aws-cdk/aws-iam";
 
-export class ApiStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+export class ApiStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    // User Pool
-    const userPool = new UserPool(this, "userPool", {
-      userPoolName: "users"
-    });
+    /**
+     * API
+     */
 
-    const userPoolAppClient = new CfnUserPoolClient(this, "userPoolAppClient", {
-      userPoolId: userPool.userPoolId
-    });
-
-    // API
     const api = new GraphQLApi(this, "api", {
       name: `api`,
       logConfig: {
         fieldLogLevel: FieldLogLevel.ALL
       },
-      authorizationConfig: {
-        defaultAuthorization: {
-          userPool,
-          defaultAction: UserPoolDefaultAction.ALLOW
-        }
-      },
       schemaDefinitionFile: join(__dirname, "./schema.graphql")
     });
+    const cfnApi = api.node.defaultChild as CfnGraphQLApi;
+    cfnApi.authenticationType = "AWS_IAM";
 
-    // Dynamodb
+    /**
+     * Identity pool
+     */
+    const identityPool = new CfnIdentityPool(this, "identityPool", {
+      allowUnauthenticatedIdentities: true,
+      identityPoolName: "identityPool"
+    });
+
+    const unauthenticatedIdentityPoolRole = new Role(
+      this,
+      "unauthenticatedIdentityPoolRole",
+      {
+        assumedBy: new FederatedPrincipal(
+          "cognito-identity.amazonaws.com",
+          {
+            StringEquals: {
+              "cognito-identity.amazonaws.com:aud": identityPool.ref
+            },
+            "ForAnyValue:StringLike": {
+              "cognito-identity.amazonaws.com:amr": "unauthenticated"
+            }
+          },
+          "sts:AssumeRoleWithWebIdentity"
+        )
+      }
+    );
+
+    new CfnIdentityPoolRoleAttachment(this, "identityPoolRoleAttachment", {
+      identityPoolId: identityPool.ref,
+      roles: {
+        unauthenticated: unauthenticatedIdentityPoolRole.roleArn
+      }
+    });
+
+    unauthenticatedIdentityPoolRole.addToPolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ["appsync:GraphQL"],
+        resources: [api.arn]
+      })
+    );
+
+    /**
+     * Data
+     */
+
     const contactTable = new Table(this, "contactTable", {
       billingMode: BillingMode.PAY_PER_REQUEST,
       partitionKey: {
@@ -115,7 +157,7 @@ export class ApiStack extends cdk.Stack {
       typeName: "Query",
       fieldName: "getInfection",
       requestMappingTemplate: MappingTemplate.dynamoDbGetItem("id", "id"),
-      responseMappingTemplate: MappingTemplate.dynamoDbResultList()
+      responseMappingTemplate: MappingTemplate.dynamoDbResultItem()
     });
 
     infectionDataSource.createResolver({
@@ -133,14 +175,9 @@ export class ApiStack extends cdk.Stack {
      * Outputs
      */
 
-    new CfnOutput(this, "userPoolId", {
-      value: userPool.userPoolId,
-      exportName: "userPoolId"
-    });
-
-    new CfnOutput(this, "userPoolAppClientId", {
-      value: userPoolAppClient.ref,
-      exportName: "userPoolAppClientId"
+    new CfnOutput(this, "identityPoolId", {
+      value: identityPool.ref,
+      exportName: "identityPoolId"
     });
 
     new CfnOutput(this, "apiUrl", {

@@ -11,7 +11,7 @@ type Infection {
   id: ID! # Primary key (partition and sort)
   userId: ID! # GSI
   infectedTimestamp: AWSTimestamp! # Sort key
-  fromInfectionId: ID! # The id which caused this - if it is invalidated then this infection can also be invalidated
+  fromInfectionId: ID # The id which caused this - if it is invalidated then this infection can also be invalidated
   detectionSource: DetectionSource!
   createdTimestamp: AWSTimestamp!
   deletedTimestamp: AWSTimestamp # Tombstone
