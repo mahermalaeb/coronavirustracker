@@ -1,7 +1,9 @@
 import { Stack, Construct, StackProps, CfnOutput } from "@aws-cdk/core";
 import {
   CfnIdentityPool,
-  CfnIdentityPoolRoleAttachment
+  CfnIdentityPoolRoleAttachment,
+  UserPool,
+  UserPoolClient
 } from "@aws-cdk/aws-cognito";
 import {
   GraphQLApi,
@@ -40,9 +42,23 @@ export class ApiStack extends Stack {
     /**
      * Identity pool
      */
+    const userPool = new UserPool(this, "users", {
+      userPoolName: "users"
+    });
+
+    const userPoolClient = new UserPoolClient(this, "userPoolClient", {
+      userPool
+    });
+
     const identityPool = new CfnIdentityPool(this, "identityPool", {
       allowUnauthenticatedIdentities: true,
-      identityPoolName: "identityPool"
+      identityPoolName: "identityPool",
+      cognitoIdentityProviders: [
+        {
+          clientId: userPoolClient.userPoolClientId,
+          providerName: userPool.userPoolProviderName
+        }
+      ]
     });
 
     const unauthenticatedIdentityPoolRole = new Role(
@@ -67,7 +83,8 @@ export class ApiStack extends Stack {
     new CfnIdentityPoolRoleAttachment(this, "identityPoolRoleAttachment", {
       identityPoolId: identityPool.ref,
       roles: {
-        unauthenticated: unauthenticatedIdentityPoolRole.roleArn
+        unauthenticated: unauthenticatedIdentityPoolRole.roleArn,
+        authenticated: unauthenticatedIdentityPoolRole.roleArn
       }
     });
 
@@ -169,11 +186,67 @@ export class ApiStack extends Stack {
       responseMappingTemplate: MappingTemplate.dynamoDbResultList()
     });
 
-    // TODO - create and delete infection
+    contactDataSource.createResolver({
+      typeName: "Mutation",
+      fieldName: "createInfection",
+      requestMappingTemplate: MappingTemplate.fromString(`{
+        "version": "2017-02-28",
+        "operation": "PutItem",
+        "key": {
+          "id": $util.autoId(),
+          "userId": $util.dynamodb.toDynamoDBJson($ctx.args.userId)
+        },
+        "attributeValues" : {
+          "infectedTimestamp": $util.dynamodb.toDynamoDBJson($ctx.args.infectedTimestamp),
+          "detectionSource": $util.dynamodb.toDynamoDBJson($ctx.args.detectionSource),
+          "createdTimestamp": $util.time.nowEpochSeconds(),
+        },
+        "condition" : {
+          "expression" : "#userId <> :userId AND #id <> :id",
+          "expression" : "someExpression",
+          "expressionNames" : {
+              "#userId" : "userId",
+              "#id" : "id"
+          },
+          "expressionValues" : {
+              ":userId" :  {"S": userId},
+              ":id" :  {"S": id}
+          },
+        }
+      }`),
+      responseMappingTemplate: MappingTemplate.dynamoDbResultItem()
+    });
+
+    contactDataSource.createResolver({
+      typeName: "Mutation",
+      fieldName: "deleteInfection",
+      requestMappingTemplate: MappingTemplate.fromString(`{
+        "version": "2017-02-28",
+        "operation": "UpdateItem",
+        "key": {
+          "id": $util.autoId(),
+          "userId": $util.dynamodb.toDynamoDBJson($ctx.args.userId)
+        },
+        "attributeValues" : {
+          "deletedTimestamp": $util.time.nowEpochSeconds(),
+        }
+      }`),
+      responseMappingTemplate: MappingTemplate.dynamoDbResultItem()
+    });
 
     /**
      * Outputs
      */
+
+    new CfnOutput(this, "userPoolId", {
+      value: userPool.userPoolId,
+      exportName: "userPoolId"
+    });
+
+    new CfnOutput(this, "userPoolClientId", {
+      value: userPoolClient.userPoolClientId,
+      exportName: "userPoolClientId"
+    });
 
     new CfnOutput(this, "identityPoolId", {
       value: identityPool.ref,
