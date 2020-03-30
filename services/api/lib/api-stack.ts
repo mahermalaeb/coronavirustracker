@@ -186,7 +186,7 @@ export class ApiStack extends Stack {
       responseMappingTemplate: MappingTemplate.dynamoDbResultList()
     });
 
-    contactDataSource.createResolver({
+    infectionDataSource.createResolver({
       typeName: "Mutation",
       fieldName: "createInfection",
       requestMappingTemplate: MappingTemplate.fromString(`{
@@ -217,7 +217,7 @@ export class ApiStack extends Stack {
       responseMappingTemplate: MappingTemplate.dynamoDbResultItem()
     });
 
-    contactDataSource.createResolver({
+    infectionDataSource.createResolver({
       typeName: "Mutation",
       fieldName: "deleteInfection",
       requestMappingTemplate: MappingTemplate.fromString(`{
