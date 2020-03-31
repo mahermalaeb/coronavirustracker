@@ -1,0 +1,71 @@
+#
+# Contact
+#
+# Access patterns:
+# - Create contact - frontend
+# - Get by userId (so that we can find those infected) - backend only
+#
+
+type Contact @model(queries: null, mutations: {create: "createContact", delete: null, update: null}, subscriptions: null)
+  @key(fields: ["userId", "contactUserId", "contactTimestamp"]) {
+  userId: ID! # Technically the identity pool ID
+  # Sort key is the combination of contactUserId and contactTimestamp
+  contactUserId: ID!
+  contactTimestamp: AWSTimestamp!
+  createdTimestamp: AWSTimestamp
+  expirationTimestamp: AWSTimestamp
+}
+
+type Infection @model(queries: null, mutations: {create: "createInfection", delete: "deleteInfection", update: null}, subscriptions: null)
+ @key(fields: ["id", "infectedTimestamp"])
+ @key(name: "GetInfectionsByUser", fields: ["userId"], queryField: "getInfectionsByUser") {
+  id: ID!
+  infectedTimestamp: AWSTimestamp!
+  userId: ID
+  fromInfectionId: ID
+  detectionSource: DetectionSource!
+  createdTimestamp: AWSTimestamp
+  deletedTimestamp: AWSTimestamp # Tombstone
+}
+
+# Query/Mutation are auto-generated here
+
+#type Query {
+#  getInfectionsByUser(userId: ID!): [Infection]
+#}
+
+#type Mutation {
+#  createContact(input: CreateContactInput): Contact
+#  createInfection(input: CreateInfectionInput): Infection
+#  deleteInfection(id: ID!): Infection
+#}
+
+input CreateInfectionInput {
+  userId: ID!
+  infectedTimestamp: AWSTimestamp!
+  detectionSource: DetectionSourceCreate!
+}
+
+input CreateContactInput {
+  userId: ID!
+  contactUserId: ID!
+  contactTimestamp: AWSTimestamp!
+}
+
+enum DetectionSource {
+  test
+  symptoms
+  contact
+}
+
+enum DetectionSourceCreate {
+  test
+  symptoms
+}
+
+
+# Required to fix amplify bug
+enum ModelSortDirection {
+  ASC
+  DESC
+}

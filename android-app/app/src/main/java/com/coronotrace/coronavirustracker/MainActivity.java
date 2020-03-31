@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.core.Amplify;
-
+import com.amplifyframework.datastore.generated.model.Todo;
 
 
 import java.util.UUID;
@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (AmplifyException exception) {
             Log.e("AmplifyGetStarted", "Failed to initialize Amplify", exception);
         }
+
+        Amplify.API(class Todo, )
 
         /**
          * Set trackingEnabled switch based on current settings

@@ -15,7 +15,7 @@ buildscript {
     }
 }
 
-apply plugin: 'com.amplifyframework.amplifytools'
+//apply plugin: 'com.amplifyframework.amplifytools'
 
 allprojects {
     repositories {
