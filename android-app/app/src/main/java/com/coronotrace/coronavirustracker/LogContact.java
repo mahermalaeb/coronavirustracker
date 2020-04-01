@@ -88,6 +88,7 @@ public class LogContact extends Service {
                 Contact contact = Contact.builder().userId(userId).contactUserId(contactUserId).contactTimestamp(contactTimestamp).build();
                 Amplify.API.mutate(contact, MutationType.CREATE,
                         taskCreationResponse -> {
+                            Log.i("AmplifyGetStarted", "Logged: " + taskCreationResponse.getData().getContactUserId());
                             Log.i("AmplifyGetStarted", "Errors: " + taskCreationResponse.getErrors());
                         },
                         apiFailure -> Log.e("AmplifyGetStarted", "Failed to create a task.", apiFailure)
