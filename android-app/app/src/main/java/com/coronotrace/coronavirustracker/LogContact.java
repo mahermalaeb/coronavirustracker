@@ -37,6 +37,9 @@ public class LogContact extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        /**
+         * Initialise foreground task
+         */
         String input = intent.getStringExtra("inputExtra");
         createNotificationChannel();
         Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -50,12 +53,21 @@ public class LogContact extends Service {
                 .build();
         startForeground(1, notification);
 
-        // Get the UUID
+        /**
+         * Get phone UUID
+         */
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("preferences", MODE_PRIVATE);
         String trackingId = sharedPreferences.getString("trackingId", null);
         Log.d(TAG, "Logging contact with Tracking ID: " + trackingId);
 
-        // Setup the message listener
+        /**
+         * Initialise amplify and Auth
+         */
+
+
+        /**
+         * Setup the message listener to log contact
+         */
         messageListener = new MessageListener() {
             @Override
             public void onFound(Message message) {

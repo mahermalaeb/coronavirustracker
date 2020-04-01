@@ -12,10 +12,16 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.client.Callback;
+import com.amazonaws.mobile.client.UserStateDetails;
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.api.graphql.MutationType;
 import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.Contact;
 import com.amplifyframework.datastore.generated.model.Todo;
+import com.coronotrace.auth.AnonymousAuth;
 
 
 import java.util.UUID;
@@ -40,31 +46,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         /**
-         * Test api
+         * Initialise AWS Amplify
          */
         try {
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.configure(getApplicationContext());
-            Log.i("AmplifyGetStarted", "Amplify is all setup and ready to go!");
         } catch (AmplifyException exception) {
-            Log.e("AmplifyGetStarted", "Failed to initialize Amplify", exception);
+            Log.e("Amplify", "Failed to initialize Amplify", exception);
         }
 
-        Amplify.API(class Todo, )
+        AnonymousAuth auth = new AnonymousAuth(this);
+        trackingId = auth.initialise();
+        Log.i("Amplify", "Identity:  " + trackingId);
 
         /**
-         * Set trackingEnabled switch based on current settings
+         * Get/update trackingEnabled setting and trackingId sharedPreferences
          */
         sharedPreferences = getApplicationContext().getSharedPreferences("preferences", MODE_PRIVATE);
         int trackingEnabledInt = sharedPreferences.getInt("trackingEnabled", 1);
         trackingEnabled = trackingEnabledInt == 1;
 
-        // Get the app UUID (or set if not present)
-        trackingId = sharedPreferences.getString("trackingId", null);
-        if (trackingId == null) {
-            trackingId = UUID.randomUUID().toString();
-            sharedPreferences.edit().putString("trackingId", trackingId).apply();
-        }
+        // Update the tracking ID
+        sharedPreferences.edit().putString("trackingId", trackingId).apply();
 
         // Set tracking enabled switch
         Switch trackingEnabledSwitch = (Switch) findViewById(R.id.trackingEnabled);
@@ -103,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+
 
         /**
          * Update the user status card

@@ -1,11 +1,3 @@
-#
-# Contact
-#
-# Access patterns:
-# - Create contact - frontend
-# - Get by userId (so that we can find those infected) - backend only
-#
-
 type Contact @model(queries: null, mutations: {create: "createContact", delete: null, update: null}, subscriptions: null)
   @key(fields: ["userId", "contactUserId", "contactTimestamp"]) {
   userId: ID! # Technically the identity pool ID

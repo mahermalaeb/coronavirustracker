@@ -44,5 +44,7 @@ dependencies {
     //For AWSMobileClient only:
     implementation 'com.amplifyframework:core:0.10.0'
     implementation 'com.amplifyframework:aws-api:0.10.0'
+    implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.16.+'
+
 
 }
