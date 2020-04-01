@@ -21,7 +21,6 @@ import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
 import com.google.android.gms.nearby.messages.MessageListener;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -140,10 +139,10 @@ public class LogContact extends Service {
         int secondMillisecond = Integer.parseInt(secondMillisecondString);
         int delay = 60000 - secondMillisecond;
 
-        // TODO make scheduler self-correct
+        // TODO make scheduler self-correct for time lag
 
         // Start at the beginning of every minute
-        ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(1);
+        ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(2);
         startLog = scheduler.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -157,8 +156,7 @@ public class LogContact extends Service {
             public void run() {
                 stopLogging();
             }
-            // TODO - put back to 10000
-        }, delay + 50000, 60000 , TimeUnit.MILLISECONDS );
+        }, delay + 10000, 60000 , TimeUnit.MILLISECONDS );
     }
 
     private void stopLoggingScheduler() {

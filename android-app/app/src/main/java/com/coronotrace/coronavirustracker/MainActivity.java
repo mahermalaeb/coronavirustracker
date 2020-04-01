@@ -139,14 +139,8 @@ public class MainActivity extends AppCompatActivity {
             statusCardTitle.setTextColor(textColor);
             statusCardBody.setText(R.string.status_symptoms_body);
             statusCardBody.setTextColor(textColor);
-
-            // Add cancel button to the status card
-//            Button cancelSymptomsButton = new Button(this);
-//            cancelSymptomsButton.setText("I made a mistake");
-//            statusCard.addView(cancelSymptomsButton);
-
-            // Change the symptoms button
-            mainButton.setVisibility(View.GONE);
+            mainButton.setText(R.string.made_mistake);
+            mainButton.setBackgroundColor(backgroundColor);
         }
     }
 
@@ -154,11 +148,18 @@ public class MainActivity extends AppCompatActivity {
      * Symptom checker button
      */
     public void checkSymptoms(View view) {
-        Intent intent = new Intent(this, CheckSymptoms.class);
-        startActivity(intent);
-    }
 
-    public void mistakeSymptoms(View view) {
-        // TODO - remove symptoms state
+        if (symptomsRecentlyReported == true) {
+            sharedPreferences.edit().remove("symptomsReportedDate").apply();
+
+            // Reload activity to get new settings
+            finish();
+            startActivity(getIntent());
+
+            // TODO - Delete from API
+        } else {
+            Intent intent = new Intent(this, CheckSymptoms.class);
+            startActivity(intent);
+        }
     }
 }

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Coronavirus Tracker</string>
     <string name="check_symptoms">Check Symptoms</string>
+    <string name="made_mistake">Cancel reported coronavirus</string>
     <string name="settings">Settings</string>
     <string name="enable_contact_tracking">Enable contract tracking</string>
     <string name="enable_contact_tracking_description">The app will remember everyone who you\'ve

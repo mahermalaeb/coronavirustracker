@@ -12,6 +12,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 
+import com.amplifyframework.api.graphql.MutationType;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.DetectionSource;
+import com.amplifyframework.datastore.generated.model.Infection;
+
+import java.util.UUID;
+
 public class CheckSymptoms extends AppCompatActivity {
 
 
@@ -57,6 +64,18 @@ public class CheckSymptoms extends AppCompatActivity {
                     .setMessage(R.string.check_symptoms_positive_body)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
+                            // Post to API
+                            Long contactTimestamp = System.currentTimeMillis();
+                            String dummyUUID = UUID.randomUUID().toString();
+                            Infection infection = Infection.builder().infectedTimestamp(contactTimestamp).detectionSource(DetectionSource.symptoms).id(dummyUUID).build();
+                            Amplify.API.mutate(infection, MutationType.CREATE,
+                                    taskCreationResponse -> {
+                                        Log.i("InfectionReported", "Logged: " + taskCreationResponse.getData());
+                                        Log.i("InfectionReported", "Errors: " + taskCreationResponse.getErrors());
+                                    },
+                                    apiFailure -> Log.e("InfectionReported", "Failed to create an infection: ", apiFailure)
+                            );
+
                             // Update symptoms settings
                            SharedPreferences sharedPreferences = getApplicationContext()
                                    .getSharedPreferences("preferences", MODE_PRIVATE);
