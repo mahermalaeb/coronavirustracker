@@ -1,4 +1,4 @@
-import { Stack, Construct, StackProps, CfnOutput } from "@aws-cdk/core";
+import { Stack, Construct, StackProps, CfnOutput, Fn } from "@aws-cdk/core";
 import {
   CfnIdentityPool,
   CfnIdentityPoolRoleAttachment,
@@ -93,7 +93,7 @@ export class ApiStack extends Stack {
       new PolicyStatement({
         effect: Effect.ALLOW,
         actions: ["appsync:GraphQL"],
-        resources: [api.arn]
+        resources: [api.arn, Fn.join("", [api.arn, "/*"])]
       })
     );
 
