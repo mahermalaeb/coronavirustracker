@@ -35,7 +35,7 @@ public class AnonymousAuth {
 
                     @Override
                     public void onError(Exception e) {
-                        Log.e("Amplify Auth", "Initialization error.", e);
+                        //Log.e("Amplify Auth", "Initialization error.", e);
                     }
                 }
         );
@@ -51,7 +51,7 @@ public class AnonymousAuth {
 
                     @Override
                     public void onError(Exception e) {
-                        Log.e("Amplify Auth", "Initialization error.", e);
+                        //Log.e("Amplify Auth", "Initialization error.", e);
                     }
                 }
         );

@@ -70,10 +70,10 @@ public class CheckSymptoms extends AppCompatActivity {
                             Infection infection = Infection.builder().infectedTimestamp(contactTimestamp).detectionSource(DetectionSource.symptoms).id(dummyUUID).build();
                             Amplify.API.mutate(infection, MutationType.CREATE,
                                     taskCreationResponse -> {
-                                        Log.i("InfectionReported", "Logged: " + taskCreationResponse.getData());
-                                        Log.i("InfectionReported", "Errors: " + taskCreationResponse.getErrors());
+                                        //Log.i("InfectionReported", "Logged: " + taskCreationResponse.getData());
+                                        //Log.i("InfectionReported", "Errors: " + taskCreationResponse.getErrors());
                                     },
-                                    apiFailure -> Log.e("InfectionReported", "Failed to create an infection: ", apiFailure)
+                                    apiFailure -> {} //Log.e("InfectionReported", "Failed to create an infection: ", apiFailure)
                             );
 
                             // Update symptoms settings

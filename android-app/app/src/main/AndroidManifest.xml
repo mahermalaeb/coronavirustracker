@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.coronotrace.coronavirustracker">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.coronotrace.coronavirustracker"
+    android:versionCode="1"
+    android:versionName="0.0.1">
 
     <!-- Required for Nearby Connections -->
     <uses-permission android:name="android.permission.BLUETOOTH" />

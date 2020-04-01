@@ -52,12 +52,11 @@ public class MainActivity extends AppCompatActivity {
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.configure(getApplicationContext());
         } catch (AmplifyException exception) {
-            Log.e("Amplify", "Failed to initialize Amplify", exception);
+            //Log.e("Amplify", "Failed to initialize Amplify", exception);
         }
 
         AnonymousAuth auth = new AnonymousAuth(this);
         trackingId = auth.initialise();
-        Log.i("Amplify", "Identity:  " + trackingId);
 
         /**
          * Get/update trackingEnabled setting and trackingId sharedPreferences

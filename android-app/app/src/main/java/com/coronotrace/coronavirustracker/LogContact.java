@@ -63,7 +63,6 @@ public class LogContact extends Service {
          */
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("preferences", MODE_PRIVATE);
         String trackingId = sharedPreferences.getString("trackingId", null);
-        Log.d(TAG, "Logging contact with Tracking ID: " + trackingId);
 
         /**
          * Initialise amplify and Auth
@@ -81,16 +80,17 @@ public class LogContact extends Service {
                 // Get the contact details
                 String contactUserId = new String(message.getContent());
                 Long contactTimestamp = System.currentTimeMillis();
-                Log.d(TAG, "Found user " + new String(message.getContent()) + " with timestamp " + contactTimestamp.toString());
+                //Log.d(TAG, "Found user " + new String(message.getContent()) + " with timestamp " + contactTimestamp.toString());
 
                 // Push to backend
                 Contact contact = Contact.builder().userId(userId).contactUserId(contactUserId).contactTimestamp(contactTimestamp).build();
                 Amplify.API.mutate(contact, MutationType.CREATE,
                         taskCreationResponse -> {
-                            Log.i("AmplifyGetStarted", "Logged: " + taskCreationResponse.getData().getContactUserId());
-                            Log.i("AmplifyGetStarted", "Errors: " + taskCreationResponse.getErrors());
+                            //Log.i("AmplifyGetStarted", "Logged: " + taskCreationResponse.getData().getContactUserId());
+                            //Log.i("AmplifyGetStarted", "Errors: " + taskCreationResponse.getErrors());
                         },
-                        apiFailure -> Log.e("AmplifyGetStarted", "Failed to create a task.", apiFailure)
+                        apiFailure -> {}
+                                //Log.e("AmplifyGetStarted", "Failed to create a task.", apiFailure)
                 );
             }
         };
@@ -156,7 +156,7 @@ public class LogContact extends Service {
             public void run() {
                 stopLogging();
             }
-        }, delay + 10000, 60000 , TimeUnit.MILLISECONDS );
+        }, delay + 15000, 60000 , TimeUnit.MILLISECONDS );
     }
 
     private void stopLoggingScheduler() {
