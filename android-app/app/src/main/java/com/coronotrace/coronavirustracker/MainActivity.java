@@ -59,6 +59,16 @@ public class MainActivity extends AppCompatActivity {
         trackingId = auth.initialise();
         Log.i("Amplify", "Identity:  " + trackingId);
 
+        // Test api
+        Long contactTimestamp = System.currentTimeMillis();
+        Contact contact = Contact.builder().userId("asdfasdf").contactUserId("sdfasdfasdf").contactTimestamp(contactTimestamp).build();
+        Amplify.API.mutate(contact, MutationType.CREATE,
+                taskCreationResponse -> {
+                    Log.i("AmplifyGetStarted", "Errors: " + taskCreationResponse.getErrors());
+                },
+                apiFailure -> Log.e("AmplifyGetStarted", "Failed to create a task.", apiFailure)
+        );
+
         /**
          * Get/update trackingEnabled setting and trackingId sharedPreferences
          */
@@ -76,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         // Start the foreground service if tracking is enabled
         trackingEnabledIntent = new Intent(this, LogContact.class);
         if (trackingEnabled) {
-            startService(trackingEnabledIntent);
+//            startService(trackingEnabledIntent);
         }
 
     }

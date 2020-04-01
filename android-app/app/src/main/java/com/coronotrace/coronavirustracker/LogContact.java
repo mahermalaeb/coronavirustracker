@@ -12,10 +12,16 @@ import android.os.IBinder;
 import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+
+import com.amplifyframework.api.graphql.MutationType;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.Contact;
+import com.coronotrace.auth.AnonymousAuth;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
 import com.google.android.gms.nearby.messages.MessageListener;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -63,6 +69,8 @@ public class LogContact extends Service {
         /**
          * Initialise amplify and Auth
          */
+        AnonymousAuth auth = new AnonymousAuth(this);
+        String userId = auth.initialise();
 
 
         /**
@@ -71,9 +79,19 @@ public class LogContact extends Service {
         messageListener = new MessageListener() {
             @Override
             public void onFound(Message message) {
-                Log.d(TAG, "Found message: " + new String(message.getContent()));
+                // Get the contact details
+                String contactUserId = new String(message.getContent());
+                Long contactTimestamp = System.currentTimeMillis();
+                Log.d(TAG, "Found user " + new String(message.getContent()) + " with timestamp " + contactTimestamp.toString());
 
-                // TODO - save UUID
+                // Push to backend
+                Contact contact = Contact.builder().userId(userId).contactUserId(contactUserId).contactTimestamp(contactTimestamp).build();
+                Amplify.API.mutate(contact, MutationType.CREATE,
+                        taskCreationResponse -> {
+                            Log.i("AmplifyGetStarted", "Errors: " + taskCreationResponse.getErrors());
+                        },
+                        apiFailure -> Log.e("AmplifyGetStarted", "Failed to create a task.", apiFailure)
+                );
             }
         };
 
@@ -138,7 +156,8 @@ public class LogContact extends Service {
             public void run() {
                 stopLogging();
             }
-        }, delay + 10000, 60000 , TimeUnit.MILLISECONDS );
+            // TODO - put back to 10000
+        }, delay + 50000, 60000 , TimeUnit.MILLISECONDS );
     }
 
     private void stopLoggingScheduler() {

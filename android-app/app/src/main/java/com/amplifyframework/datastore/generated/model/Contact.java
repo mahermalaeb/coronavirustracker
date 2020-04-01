@@ -18,7 +18,7 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 /** This is an auto generated class representing the Contact type in your schema. */
 @SuppressWarnings("all")
 @ModelConfig(pluralName = "Contacts")
-@Index(name = "undefined", fields = {"userId","contactUserId","contactTimestamp"})
+@Index(name = "undefined", fields = {"userId"})
 public final class Contact implements Model {
   public static final QueryField ID = field("id");
   public static final QueryField USER_ID = field("userId");
